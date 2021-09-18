@@ -1,3 +1,5 @@
+require("worker.js");
+
 let express = require("express");
 const port = process.env.PORT || 3000;
 
@@ -12,4 +14,7 @@ let server = app.listen(port, ()=>{
 
 app.get("/",(req,res)=>{
     res.render("index.ejs")
-})
+});
+
+// GOOGLE SEARCH ENGINE ID: 17125c511a5a54b01
+
