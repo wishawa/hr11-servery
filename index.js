@@ -1,5 +1,6 @@
-require("worker.js");
-require("matching.js")
+require("./worker.js");
+require("./matching.js");
+require("./notification.js");
 
 let express = require("express");
 const port = process.env.PORT || 3000;
