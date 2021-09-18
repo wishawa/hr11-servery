@@ -18,8 +18,7 @@ function processSection(section, c) {
 		const name = s.find("div.mitem").text();
 		const labels = [];
 		s.find("div.icons.icon-only").map((_idx, lbl) => {
-			const classes = c(lbl).attr('class').split(' ');
-			const labelClass = classes[classes.length - 1];
+			const labelClass = c(lbl).attr('class').split(' ').pop();
 			const labelText = labelClass.split('-')[1];
 			labels.push(labelText);
 		});
@@ -46,6 +45,6 @@ async function scrapeOne(url) {
 }
 
 
-const job = cron.schedule('0 0 0 * * *', () => {
+const job = cron.schedule('0 5 0 * * *', () => {
 	
 });
