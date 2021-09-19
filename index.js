@@ -188,6 +188,6 @@ vegan
 vegetarian
 */
 
-runServery("lunch")
+runServery("lunches")
 
-setTimeout(()=>{runServery("dinner")},5000)
+setTimeout(()=>{runServery("dinners")},5000)
