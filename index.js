@@ -1,8 +1,10 @@
-require("./worker.js");
-require("./matching.js");
+const worker = require("./worker.js");
+const matching = require("./matching.js");
 require("./notification.js");
 
 let express = require("express");
+const { workersUrl } = require("twilio/lib/jwt/taskrouter/util");
+const { scrapeOne } = require("./worker.js");
 const port = process.env.PORT || 3000;
 
 
@@ -10,13 +12,109 @@ let app = express();
 app.use(express.static("public"));
 app.set("view-engine", "ejs");
 
-let server = app.listen(port, ()=>{
+let server = app.listen(port, () => {
     console.log(`Listening to port ${port}`)
 })
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.render("index.ejs")
 });
 
 // GOOGLE SEARCH ENGINE ID: 17125c511a5a54b01
 
+/*
+CODE FOR RECEIVING POST REQUESTS AND SENDING A RESPONSE BACK
+
+
+*/
+
+/*
+0. Look through the important criterion and create respective list items for menu.
+#+1 for each matched criteria
+0.5. dietary restriction check by the images/icons
+0.7. do a search of each food item in matching.js and wikisearch, look in the summary.
+1. Check if the user's particular string is part of any menu item
+2. Check if the user's particular string is connected to any of the food items through wikisearch.
+Give Recommendation 
+*/
+let users = []
+/*
+This will be in the format 
+users
+{
+    name: str
+    number: str
+    restr # restrictions: list of str
+    prefs # preferences: list of str
+    prefsKeys Keywords associated
+    foodRecs:{
+        north:{
+            matches: 4
+            foods: []
+        }
+    }
+}
+*/
+const wikisearch = require("./wikisearch.js");
+
+
+let serveryChoice = {};
+async function initServeries(){
+    for (let serveries in worker.URLS_LIST) {
+        scrapeOne(worker.URLS_LIST[serveries]).then((serveryData) => {
+            for (let mealTime in serveryData) {
+                let curMealTime = serveryData[mealTime];
+                for (let i = 0; i < curMealTime?.length; i++) {
+                    let {name} = curMealTime[i];
+                    let curMealSummary = "";
+                    matching.getData(name).then((searchWord) => {
+                        (async () => {
+                            curMealSummary = await wikisearch(searchWord);
+                            //console.log(curMealSummary);
+                        })();
+                    })
+                    curMealTime[i].summary = curMealSummary;
+                }
+            }
+            serveryChoice[serveries] = serveryData;
+        });
+    }
+    console.log(serveryChoice);
+    return serveryChoice;
+}
+initServeries().then((x)=>{
+    console.log(x);
+    console.log(serveryChoice);
+    for(let user in users){
+        for(let servery in serveryChoice){
+            let curServery = serveryChoice[servery];
+            let foodMatches = [];
+            for(let mealTime in curServery){
+                let curServeryMeal = curServery[mealTime];
+                curServeryMeal.foreach(()=>{
+                    //name and labels and summary
+
+                })
+            }
+            users[user][servery].foodRecs = {
+                matches: foodMatches.length,
+                foods: foodMatches
+            }
+        }
+    }
+})
+.catch(()=>{console.log("caught,")})
+
+setTimeout(()=>{console.log(serveryChoice)},5000)
+/*
+eggs
+fish
+gluten
+milk
+peanuts
+shellfish
+soy
+tree-nuts
+vegan
+vegetarian
+*/
