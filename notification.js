@@ -16,7 +16,7 @@ async function formatAndSend(information) {
 	const [lunch1, lunch2] = lunch.slice(0, 2);
 	const [dinner1, dinner2] = dinner.slice(0, 2);
 	const text =
-	`Good morning ${name.split(" ")[0]}! ${(new Date()).toLocaleDateString()}.
+	`Good morning ${name.split(" ")[0]}!
 	
 	----Lunch----
 	${lunch1.servery}: ${lunch1.info.foods.join(", ")}.
