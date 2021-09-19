@@ -21,7 +21,7 @@ const URLS_LIST = {
 
 function processSection(section, c) {
 	const mealsTds = [];
-	c(section).find('div.item > div.options > table.menu-items > tbody > tr > td').map((_idx, td) => mealsTds.push(td));
+	c(section).find('div.options > table.menu-items > tbody > tr > td').map((_idx, td) => mealsTds.push(td));
 	return mealsTds.map((td) => {
 		const s = c(td);
 		const name = s.find("div.mitem").text().split("\n").join("");
@@ -45,11 +45,11 @@ async function scrapeOne(url) {
 	const text = await response.text();
 	const c = cheerio.load(text);
 	const list = [];
-	c("body").find("div.menu-scaffold > div.html-scaffold-body > div.menu-list > div.item-group.inside-daily-menu").map((_idx, elem) => list.push(elem));
-	const [lunch, dinner] = list;
+	c("body").find("div.menu-scaffold > div.html-scaffold-body > div.menu-list > div.item-group.inside-daily-menu > div.item").map((_idx, elem) => list.push(elem));
+	const [lunches, dinners] = list;
 	return {
-		lunch: processSection(lunch, c),
-		dinner: processSection(dinner, c),
+		lunches: processSection(lunches, c),
+		dinners: processSection(dinners, c),
 	};
 }
 
