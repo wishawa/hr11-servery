@@ -49,8 +49,9 @@ function clearElem(elem) {
 }
 
 function renderTable() {
+	const clonedHead = labelsTableHead.cloneNode(true);
 	clearElem(labelsTable);
-	labelsTable.appendChild(labelsTableHead);
+	labelsTable.appendChild(clonedHead);
 
 	for (const label of labels) {
 		const tr = document.createElement("tr");

@@ -28,7 +28,7 @@ function processSection(section, c) {
 		const labels = [];
 		s.find("div.icons.icon-only").map((_idx, lbl) => {
 			const labelClass = c(lbl).attr('class').split(' ').pop();
-			const labelText = labelClass.slice(5);
+			const labelText = labelClass.slice(6);
 			labels.push(labelText);
 		});
 		return {
@@ -70,6 +70,7 @@ async function cronJob() {
 			}
 		}
 	});
+	return docs;
 }
 
 const job = cron.schedule('5 0 0 * * *', cronJob);
@@ -78,5 +79,6 @@ module.exports = {
 	URLS_LIST: URLS_LIST,
 	processSection: processSection,
 	scrapeOne: scrapeOne,
-	job: job
+	job: job,
+	cronJob:cronJob
 }

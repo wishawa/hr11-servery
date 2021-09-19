@@ -39,7 +39,9 @@ CODE FOR RECEIVING POST REQUESTS AND SENDING A RESPONSE BACK
 2. Check if the user's particular string is connected to any of the food items through wikisearch.
 Give Recommendation 
 */
-let users = [{
+let users;
+(async ()=>{users = await worker.cronJob()})();
+/*[{
     name: "James",
     number: "224123123",
     restr: ["eggs",
@@ -56,6 +58,7 @@ let users = [{
     prefsKeys: ["korean", "chinese", "rice", "bread","thai"],
     foodRecs: {}
 }]
+*/
 /*
 This will be in the format 
 users
@@ -165,10 +168,7 @@ setTimeout(()=>{
         console.log(tOrdering);
         users[user].ordering = tOrdering;
     }
-})
-.catch(()=>{console.log("caught,")})
-
-setTimeout(()=>{console.log(serveryChoice)},10000);
+},10000);
 
 /*
 eggs
