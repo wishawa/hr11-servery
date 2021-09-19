@@ -13,9 +13,11 @@ app.set("view-engine", "ejs");
 let server = app.listen(port, ()=>{
     console.log(`Listening to port ${port}`)
 })
-
 app.get("/",(req,res)=>{
-    res.render("index.ejs")
+    res.render("signon.ejs")
+});
+app.get("/home", (req, res)=>{
+    res.render("home.ejs")
 });
 
 // GOOGLE SEARCH ENGINE ID: 17125c511a5a54b01

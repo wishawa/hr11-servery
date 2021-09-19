@@ -15,10 +15,10 @@ async function getData(query){
     //console.log(Object.keys(data));
 }
 
-getData("moroccan rice pilaf").then((x)=>{
+/*getData("moroccan rice pilaf").then((x)=>{
     console.log(x);
     (async ()=>{
         foodSummary = await wikisearch(x);
         console.log(foodSummary);
     })();
-})
+})*/
