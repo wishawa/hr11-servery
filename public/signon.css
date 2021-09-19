@@ -1,3 +1,54 @@
-.hidden {
-	display: none;
+.signoninput{
+    width:100%;
 }
+
+#start-button {
+    box-shadow: 10px, 10px, 5px, gray;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    color: #7D7B79;
+    border: none;
+    padding:0.35em 1.2em;
+    box-shadow:0.1em 0.2em 0.25em rgb(0 0 0 / 15%);
+    border-top: #f3f3f3 1px solid;
+    font-size: 1em !important;
+}
+
+#start-button span.google-icon {
+    background: url("https://developers.google.com/identity/images/g-logo.png");
+    float: left;
+    width: 10px;
+    height: 10px;
+}
+
+.sign-in-panel {
+    background-color: white;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin-top: 100px;
+}
+
+
+#phone-update-area {
+    text-align: left;
+}
+
+#phone-update-area input {
+    margin-right: .8em;
+    border: #d0d0d0 1px solid;
+    margin-bottom: .5em;
+}
+button {
+        background-color: white;
+        font-weight: 300;
+        color: #7D7B79;
+        border: none;
+        padding:0.35em .6em;
+        box-shadow:0.1em 0.1em 0.2em rgb(0 0 0 / 15%);
+        border-top: #f3f3f3 1px solid;
+        /*font-size: 14px;*/
+        font-size: .87em !important;
+
+}
+

@@ -4,22 +4,53 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+	<link rel="manifest" href="favicon/site.webmanifest">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 	<script src="/home.js" type="module"></script>
 	<link rel="stylesheet" type="text/css" href="style.css"/>
-	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="home.css"/>
+	<title>Rice Dining</title>
 </head>
 <body>
-	<h1>Welcome</h1>
-	<div id="labels-table-container">
-		<table id="labels-table">
-			<tr id="labels-table-head"><th></th><th>Restrictions</th><th>Preferences</th></tr>
-		</table>
+	<div class="container d-flex flex-column align-items-center main-form-focus-first" id="main-form">
+		<div class="main-form-group" id="main-form-group-first">
+			<div class="row">
+				<h2 id="welcome-message">
+
+				</h2>
+				<h4>Which of the following can you <i>not</i> eat?</h4>
+			</div>
+			<div id="rstr-labels-list-container" class="container d-flex flex-row flex-wrap justify-content-center">
+				
+			</div>
+			<div class="container column">
+				<!-- <button class="btn btn-primary my-2" id="next-button">
+					Next
+				</button> -->
+			</div>
+		</div>
+		<div class="main-form-group" id="main-form-group-second">
+			<div class="row">
+				<h4>What are some food you like?</h4>
+			</div>
+			<div id="free-list" class="container d-flex flex-row flex-wrap justify-content-center"></div>
+			<div class="input-group ">
+				<input id="free-input" type="text" placeholder="Pasta" class="form-control"/>
+				<button id="free-submit" class="btn btn-primary">Add</button>
+			</div>
+			<div class="container column">
+				<!-- <button class="btn btn-primary my-2" id="back-button">
+					Back
+				</button> -->
+				<button class="btn btn-primary my-2" id="save-button">
+					Save
+				</button>
+			</div>
+			<div id="saved-message" class="alert alert-primary hidden">Successfully Saved. We will be texting you!</div>
+		</div>
 	</div>
-	<div id="free-list-container">
-		<div id="free-list"></div>
-		<input id="free-input" type="text" placeholder="Pasta" />
-		<button id="free-submit">Add</button>
-	</div>
-	<button id="save-button">Save</button>
 </body>
 </html>
