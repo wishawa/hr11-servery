@@ -78,100 +78,78 @@ users
 */
 const wikisearch = require("./wikisearch.js");
 
-async function runServery(timeOfDay){
-    let serveryChoice = {};
-    async function initServeries(){
-        for (let serveries in worker.URLS_LIST) {
-            scrapeOne(worker.URLS_LIST[serveries]).then((serveryData) => {
-                console.log(serveryData)
-                //for (let mealTime in serveryData) {
-                    let curMealTime = serveryData[timeOfDay];
-                    console.log("+++++++++++++++++++++++++", curMealTime)
-                    for (let i = 0; i < curMealTime?.length; i++) {
-                        let {name} = curMealTime[i];
-                        let curMealSummary = "";
-                        matching.getData(name).then(async (searchWord) => {
-                                curMealSummary = await wikisearch(searchWord);
-                                
-                        })
-                        curMealTime[i].summary = curMealSummary;
+async function runMeal(timeOfDay) {
+    let serveries = {};
+    try {
+        for (const [serveryName, serveryUrl] of Object.entries(worker.URLS_LIST)) {
+            const serveryData = await scrapeOne(serveryUrl);
+            let curMeal = serveryData[timeOfDay];
+            await Promise.all(curMeal.map(async (meal) => {
+                const {name} = meal;
+                let summary = await wikisearch(decodeURIComponent(await matching.getData(name)));
+                meal.summary = summary;
+            }));
+            serveries[serveryName] = serveryData;
+        }
+    }
+    catch(e) {
+        console.error(e);
+    }
+    
+    
+    const WEIGHT_WIKIPEDIA_WORD = 1, WEIGHT_PREF_MATCH = 2, WEIGTH_NAME_MATCH = 4;
+    for (const user in users) {
+        let {restr, prefs, prefsKeys} = users[user];
+        for(const [serveryName, serveryInfo] of Object.entries(serveries)) {
+            let foodMatches = [];
+            let priority = 0;
+
+            let serveryMeals = serveryInfo[timeOfDay];
+            serveryMeals.forEach((meal)=>{
+                const {name, labels, summary} = meal;
+                let addFood = true;
+                for(let i = 0 ; i < restr.length ; i++){
+                    if(labels.includes(restr[i])){
+                        addFood = false;
+                        break;
                     }
-                //}
-                serveryChoice[serveries] = serveryData;
+                }
+                
+                if(addFood){
+                    foodMatches.push(name);
+                    for(let i = 0 ; i < prefs.length ;i++){
+                        if(labels.includes(prefs[i])){
+                            priority += WEIGHT_PREF_MATCH;
+                        }
+                    }
+                    for(let i = 0 ; i < prefsKeys.length ; i++){
+                        if(name.toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                            priority+=WEIGTH_NAME_MATCH;
+                        } else {
+                            for(let j = 0 ; j < summary.length ; j++){
+                                if(summary[j].toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                                    priority += WEIGHT_WIKIPEDIA_WORD;
+                                }
+                            }
+                        }
+                    }
+                }
             });
+
+            users[user].foodRecs[serveryName] = {
+                priority: priority,
+                foods: foodMatches
+            }
         }
         
-        return serveryChoice;
-    }
-    initServeries()
-        .catch((e)=>{console.log("caught,", e)})
-    
-    
-    let WEIGHT1 = 1,
-        WEIGHT2 = 2,
-        WEIGHT3 = 4;
-    setTimeout(()=>{
-        console.log(serveryChoice);
-        for(let user in users){
-            let {restr, prefs, prefsKeys} = users[user];
-            //console.log(restr,prefs,prefsKeys)
-            for(let servery in serveryChoice){
-                let curServery = serveryChoice[servery];
-                let foodMatches = [];
-                let priority = 0;
-                //for(let mealTime in curServery){
-                    let curServeryMeal = curServery[timeOfDay];
-                    curServeryMeal.forEach((indMeal)=>{
-                        //name and labels and summary
-                        let {name, labels, summary} = indMeal;
-                        let addFood = true;
-                        for(let i = 0 ; i < restr.length ; i++){
-                            console.log(labels, restr[i], labels.includes(restr[i]));
-                            if(labels.includes(restr[i])){
-                                addFood = false;
-                                break;
-                            }
-                        }
-                        addFood?foodMatches.push(name):null;
-                        
-                        
-                        if(addFood){
-                            for(let i = 0 ; i < prefs.length ;i++){
-                                if(labels.includes(prefs[i])){
-                                    priority += WEIGHT2;
-                                }
-                            }
-                            for(let i = 0 ; i < prefsKeys.length ; i++){
-                                if(name.toLowerCase().includes(prefsKeys[i].toLowerCase())){
-                                    priority+=WEIGHT3;
-                                }else{
-                                    for(let j = 0 ; j < summary.length ; j++){
-                                        if(summary[j].toLowerCase().includes(prefsKeys[i].toLowerCase())){
-                                            priority += WEIGHT1;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                    });
-                //}
-                users[user].foodRecs[servery] = {
-                    priority: priority,
-                    foods: foodMatches
-                }
-            }
-            
-            let tOrdering = [];
-            for(servery in users[user].foodRecs){
-                tOrdering.push({servery: servery, info: users[user].foodRecs[servery]});
-            }
-            //console.log(tOrdering);
-            tOrdering.sort((a,b)=>b.info.priority-a.info.priority);
-            console.log(tOrdering);
-            users[user].ordering = tOrdering;
+        let tOrdering = [];
+        for(servery in users[user].foodRecs){
+            tOrdering.push({servery: servery, info: users[user].foodRecs[servery]});
         }
-    },10000);
+        tOrdering.sort((a,b)=>b.info.priority-a.info.priority);
+        console.log(tOrdering);
+        users[user].ordering = tOrdering;
+    }
 }
 
 
@@ -188,6 +166,6 @@ vegan
 vegetarian
 */
 
-runServery("lunches")
+runMeal("lunches")
 
-setTimeout(()=>{runServery("dinners")},5000)
+setTimeout(()=>{runMeal("dinners")},5000)

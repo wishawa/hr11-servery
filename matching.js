@@ -5,9 +5,8 @@ const wiki_CX = "17125c511a5a54b01";
 const wikisearch = require("./wikisearch.js");
 
 async function getData(query){
-    const response = await fetch(`https://www.googleapis.com/customsearch/v1/?key=${api_key}&cx=${wiki_CX}&q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://www.googleapis.com/customsearch/v1/?key=${api_key}&cx=${wiki_CX}&q=${query}`);
     const data = await response.json();
-    //console.log(data);
     qStr = data.items != null ? data.items[0].link.split("/").pop():"";
     return qStr
     //pass above in wiki
