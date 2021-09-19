@@ -19,7 +19,7 @@ function processSection(section, c) {
 		const labels = [];
 		s.find("div.icons.icon-only").map((_idx, lbl) => {
 			const labelClass = c(lbl).attr('class').split(' ').pop();
-			const labelText = labelClass.split('-')[1];
+			const labelText = labelClass.slice(5);
 			labels.push(labelText);
 		});
 		return {
