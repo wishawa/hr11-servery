@@ -15,9 +15,11 @@ app.set("view-engine", "ejs");
 let server = app.listen(port, () => {
     console.log(`Listening to port ${port}`)
 })
-
-app.get("/", (req, res) => {
-    res.render("index.ejs")
+app.get("/",(req,res)=>{
+    res.render("signon.ejs")
+});
+app.get("/home", (req, res)=>{
+    res.render("home.ejs")
 });
 
 // GOOGLE SEARCH ENGINE ID: 17125c511a5a54b01
@@ -73,7 +75,7 @@ users
 */
 const wikisearch = require("./wikisearch.js");
 
-
+/*
 let serveryChoice = {};
 async function initServeries(){
     for (let serveries in worker.URLS_LIST) {
@@ -163,8 +165,11 @@ setTimeout(()=>{
         console.log(tOrdering);
         users[user].ordering = tOrdering;
     }
-    //console.log(serveryChoice)
-},10000)
+})
+.catch(()=>{console.log("caught,")})
+
+setTimeout(()=>{console.log(serveryChoice)},5000)
+*/
 /*
 eggs
 fish
