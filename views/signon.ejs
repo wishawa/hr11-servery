@@ -20,18 +20,48 @@
 			<h1>Servery Hacks</h1>
 				<h3 class="mb-4">Welcome back!</h3>
 				
-				<!-- <div class="g-signin2" id="start-button" data-onsuccess="onSignIn"></div> -->
-
-				<button id="start-button" class="rounded">Sign in with Google</button>
-				<div id="phone-update-area" class="hidden">
-					<input id="phone-number-field" type="tel" placeholder="tel (+12345678910)" />
-					<button id="phone-check-button">Send verification number</button>
-					<div id="phone-captcha-container"></div>
-					<input id="phone-verify-field" type="text" placeholder="verfication code (123456)"/>
-					<button id="phone-submit-button">Verify</button>
+				<!-- <div class="g-signin2" id="start-button" data-on-success="onSignIn"></div> -->
+				
+				<button id="start-button" class="rounded"><span class="google-icon"></span>Sign in with Google</button>
+				
+				<div class="row"> 
+					<div class="col-sm-1"></div>
+					<div id="phone-update-area" class="hidden col-sm-10">
+						<h5 class="text-center mb-3">Enter your phone number below. Include +1 as the country code.</h5>
+						<div class="container">
+							<div class="row">
+								<div class="col-2"></div>
+								<div class="col-4 align-middle">
+									<input id="phone-number-field" type="tel" placeholder="+12345678910" class="signoninput"/>
+								</div>
+								<div class="col-4 text-left">
+									<button class="btn btn-primary pt-1 pb-1" id="phone-check-button">Verify</button>
+								</div>
+								<div class="col-2"></div>
+							</div>
+							<div id="phone-captcha-container"></div>
+							<div class="row">
+								<div class="col-2"></div>
+								<div class="col-4 align-middle">
+									<input id="phone-verify-field" type="text" placeholder="123456" class="signoninput"/>
+								</div>
+								<div class="col-4 text-left">
+									<button id="phone-submit-button" class="btn btn-primary pt-1 pb-1" >Submit</button>
+								</div>
+								<div class="col-2"></div>
+							</div>
+							
+						</div>
+						
+						
+						
+						
+						
+					</div>
+					<div class="col-sm-1"></div>
 				</div>
 		</div>
-		<div class="col-sm-3"></div>
+		<div class="col-sm-2"></div>
 	</div>
 	
 </body>
