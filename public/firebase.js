@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js';
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js'
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js';
 const firebaseConfig = {
 	apiKey: "AIzaSyCK08hkN4o9SB44qJgCd3Tbz98AHD0uqAw",
 	authDomain: "hr11-servery-app.firebaseapp.com",

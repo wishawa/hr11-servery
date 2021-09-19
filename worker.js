@@ -1,6 +1,15 @@
 const cron = require('node-cron');
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
+const firebase = require('firebase-admin');
+const serviceAccount = require("./firebase-secret.json");
+
+firebase.initializeApp({
+	credential: firebase.credential.cert(serviceAccount),
+	databaseURL: "https://hr11-servery-app-default-rtdb.firebaseio.com"
+});
+
+const firestore = firebase.firestore();
 
 const URLS_LIST = {
 	south: "https://websvc-aws.rice.edu:8443/static-files/dining-assets/South-Servery-Menu.html",
@@ -45,9 +54,25 @@ async function scrapeOne(url) {
 }
 
 
-const job = cron.schedule('0 5 0 * * *', () => {
-	
-});
+async function cronJob() {
+	const query = firestore.collection("users");
+	const snapshot = await query.get();
+	const docs = snapshot.docs.map(docSnapshot => {
+		const data = docSnapshot.data();
+		return {
+			name: data.displayName,
+			number: data.phone,
+			restr: data.rstr ?? [],
+			prefs: data.pref ?? [],
+			prefsKeys: data.free ?? [],
+			foodRecs: {
+
+			}
+		}
+	});
+}
+
+const job = cron.schedule('5 0 0 * * *', cronJob);
 
 module.exports = {
 	URLS_LIST: URLS_LIST,
