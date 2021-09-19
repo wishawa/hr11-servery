@@ -175,4 +175,3 @@ module.exports = {
 	cronJob:cronJob
 }
 
-cronJob();
