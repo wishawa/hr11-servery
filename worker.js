@@ -15,7 +15,7 @@ function processSection(section, c) {
 	c(section).find('div.item > div.options > table.menu-items > tbody > tr > td').map((_idx, td) => mealsTds.push(td));
 	return mealsTds.map((td) => {
 		const s = c(td);
-		const name = s.find("div.mitem").text();
+		const name = s.find("div.mitem").text().split("\n").join("");
 		const labels = [];
 		s.find("div.icons.icon-only").map((_idx, lbl) => {
 			const labelClass = c(lbl).attr('class').split(' ').pop();
@@ -48,3 +48,10 @@ async function scrapeOne(url) {
 const job = cron.schedule('0 5 0 * * *', () => {
 	
 });
+
+module.exports = {
+	URLS_LIST: URLS_LIST,
+	processSection: processSection,
+	scrapeOne: scrapeOne,
+	job: job
+}
