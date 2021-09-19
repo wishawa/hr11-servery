@@ -86,7 +86,3 @@ tree-nuts
 vegan
 vegetarian
 */
-
-runMeal("lunches")
-
-setTimeout(()=>{runMeal("dinners")},5000)
