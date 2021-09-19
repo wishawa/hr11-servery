@@ -50,12 +50,14 @@ async function start() {
 							goHome();
 						}
 						catch(e) {
-							alert("Phone number verification failed. Please check the code and try again.");
+							alert("Phone number verification failed.");
+							window.location.reload();
 						}
 					}
 				}
 				catch(e) {
-					alert("Phone number submission failed. Please check your phone number and try again.");
+					alert("Phone number submission failed.");
+					window.location.reload();
 				}
 			}
 		}

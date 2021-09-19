@@ -8,9 +8,9 @@ const freeSubmit = document.getElementById("free-submit");
 const welcomeMessage = document.getElementById("welcome-message");
 const labelsList = document.getElementById("rstr-labels-list-container");
 
-const mainForm = document.getElementById("main-form");
-const nextButton = document.getElementById("next-button");
-const backButton = document.getElementById("back-button");
+// const mainForm = document.getElementById("main-form");
+// const nextButton = document.getElementById("next-button");
+// const backButton = document.getElementById("back-button");
 const saveButton = document.getElementById("save-button");
 
 const labels = [
@@ -22,8 +22,8 @@ const labels = [
 	"shellfish",
 	"soy",
 	"tree-nuts",
-	"vegan",
-	"vegetarian",
+	"meat",
+	"animal"
 ];
 const labelsNames = {
 	"eggs": "Eggs",
@@ -34,8 +34,8 @@ const labelsNames = {
 	"shellfish": "Shellfish",
 	"soy": "Soy",
 	"tree-nuts": "Tree Nuts",
-	"vegan": "Vegan Food",
-	"vegetarian": "Vegetarian Food",
+	"meat": "Meat",
+	"animal": "Animal Products"
 };
 
 let choices = {
@@ -138,14 +138,14 @@ function start() {
 			choices.pref = new Set(userDoc?.pref ?? []);
 			renderLabelsList();
 			renderFreeList();
-			nextButton.addEventListener('click', () => {
-				mainForm.classList.remove("main-form-focus-first");
-				mainForm.classList.add("main-form-focus-second");
-			});
-			backButton.addEventListener('click', () => {
-				mainForm.classList.add("main-form-focus-first");
-				mainForm.classList.remove("main-form-focus-second");
-			});
+			// nextButton.addEventListener('click', () => {
+			// 	mainForm.classList.remove("main-form-focus-first");
+			// 	mainForm.classList.add("main-form-focus-second");
+			// });
+			// backButton.addEventListener('click', () => {
+			// 	mainForm.classList.add("main-form-focus-first");
+			// 	mainForm.classList.remove("main-form-focus-second");
+			// });
 			saveButton.addEventListener('click', async () => {
 				await setDoc(userDocRef, {
 					displayName: userDoc.displayName,

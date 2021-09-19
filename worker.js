@@ -76,7 +76,7 @@ async function runMeal(timeOfDay, users) {
     
     let foodRecs = {};
 
-    const WEIGHT_WIKIPEDIA_WORD = 1, WEIGHT_PREF_MATCH = 2, WEIGTH_NAME_MATCH = 4;
+    const WEIGHT_EXIST = 2, WEIGHT_WIKIPEDIA_WORD = 4, WEIGHT_PREF_MATCH = 8, WEIGTH_NAME_MATCH = 16;
     for (const user in users) {
         let {restr, prefs, prefsKeys} = users[user];
         for(const [serveryName, serveryMeals] of Object.entries(serveries)) {
@@ -86,15 +86,19 @@ async function runMeal(timeOfDay, users) {
             serveryMeals.forEach((meal)=>{
                 const {name, labels, summary} = meal;
                 let addFood = true;
-                for(let i = 0 ; i < restr.length ; i++){
-                    if(labels.includes(restr[i])){
-                        addFood = false;
-                        break;
-                    }
-                }
-                
-                if(addFood){
+				for (const rstr of restr) {
+					if (
+						(rstr === "meat" && !(labels.includes("vegetarian") || labels.includes("vegan"))) ||
+						(rstr === "animal" && !labels.includes("vegan")) ||
+						(labels.includes(rstr))
+					) {
+						addFood = false;
+						break;
+					}
+				}
+                if (addFood) {
                     foodMatches.push(name);
+					priority += WEIGHT_EXIST;
                     for(let i = 0 ; i < prefs.length ;i++){
                         if(labels.includes(prefs[i])){
                             priority += WEIGHT_PREF_MATCH;

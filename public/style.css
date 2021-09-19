@@ -65,7 +65,7 @@ html, body {
 
 
 input {
-    padding-left: 20px;
+    padding: 0.5em;
 }
 
 .hidden {
