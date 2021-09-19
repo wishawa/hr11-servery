@@ -78,97 +78,102 @@ users
 */
 const wikisearch = require("./wikisearch.js");
 
-
-let serveryChoice = {};
-async function initServeries(){
-    for (let serveries in worker.URLS_LIST) {
-        scrapeOne(worker.URLS_LIST[serveries]).then((serveryData) => {
-            for (let mealTime in serveryData) {
-                let curMealTime = serveryData[mealTime];
-                for (let i = 0; i < curMealTime?.length; i++) {
-                    let {name} = curMealTime[i];
-                    let curMealSummary = "";
-                    matching.getData(name).then(async (searchWord) => {
-                            curMealSummary = await wikisearch(searchWord);
-                            
-                    })
-                    curMealTime[i].summary = curMealSummary;
-                }
-            }
-            serveryChoice[serveries] = serveryData;
-        });
-    }
-    //console.log(serveryChoice);
-    return serveryChoice;
-}
-initServeries()
-    .catch((e)=>{console.log("caught,", e)})
-
-
-let WEIGHT1 = 1,
-    WEIGHT2 = 2,
-    WEIGHT3 = 4;
-setTimeout(()=>{
-    for(let user in users){
-        let {restr, prefs, prefsKeys} = users[user];
-        console.log(restr,prefs,prefsKeys)
-        for(let servery in serveryChoice){
-            let curServery = serveryChoice[servery];
-            let foodMatches = [];
-            let priority = 0;
-            for(let mealTime in curServery){
-                let curServeryMeal = curServery[mealTime];
-                curServeryMeal.forEach((indMeal)=>{
-                    //name and labels and summary
-                    let {name, labels, summary} = indMeal;
-                    let addFood = false;
-                    for(let i = 0 ; i < restr.length ; i++){
-                        console.log(labels, restr[i], labels.includes(restr[i]));
-                        if(labels.includes(restr[i])){
-                            addFood = true;
-                            break;
-                        }
+async function runServery(timeOfDay){
+    let serveryChoice = {};
+    async function initServeries(){
+        for (let serveries in worker.URLS_LIST) {
+            scrapeOne(worker.URLS_LIST[serveries]).then((serveryData) => {
+                console.log(serveryData)
+                //for (let mealTime in serveryData) {
+                    let curMealTime = serveryData[timeOfDay];
+                    console.log("+++++++++++++++++++++++++", curMealTime)
+                    for (let i = 0; i < curMealTime?.length; i++) {
+                        let {name} = curMealTime[i];
+                        let curMealSummary = "";
+                        matching.getData(name).then(async (searchWord) => {
+                                curMealSummary = await wikisearch(searchWord);
+                                
+                        })
+                        curMealTime[i].summary = curMealSummary;
                     }
-                    addFood?foodMatches.push(name):null;
-                    
-                    
-                    if(addFood){
-                        for(let i = 0 ; i < prefs.length ;i++){
-                            if(labels.includes(prefs[i])){
-                                priority += WEIGHT2;
+                //}
+                serveryChoice[serveries] = serveryData;
+            });
+        }
+        
+        return serveryChoice;
+    }
+    initServeries()
+        .catch((e)=>{console.log("caught,", e)})
+    
+    
+    let WEIGHT1 = 1,
+        WEIGHT2 = 2,
+        WEIGHT3 = 4;
+    setTimeout(()=>{
+        console.log(serveryChoice);
+        for(let user in users){
+            let {restr, prefs, prefsKeys} = users[user];
+            //console.log(restr,prefs,prefsKeys)
+            for(let servery in serveryChoice){
+                let curServery = serveryChoice[servery];
+                let foodMatches = [];
+                let priority = 0;
+                //for(let mealTime in curServery){
+                    let curServeryMeal = curServery[timeOfDay];
+                    curServeryMeal.forEach((indMeal)=>{
+                        //name and labels and summary
+                        let {name, labels, summary} = indMeal;
+                        let addFood = true;
+                        for(let i = 0 ; i < restr.length ; i++){
+                            console.log(labels, restr[i], labels.includes(restr[i]));
+                            if(labels.includes(restr[i])){
+                                addFood = false;
+                                break;
                             }
                         }
-                        for(let i = 0 ; i < prefsKeys.length ; i++){
-                            if(name.toLowerCase().includes(prefsKeys[i].toLowerCase())){
-                                priority+=WEIGHT3;
-                            }else{
-                                for(let j = 0 ; j < summary.length ; j++){
-                                    if(summary[j].toLowerCase().includes(prefsKeys[i].toLowerCase())){
-                                        priority += WEIGHT1;
+                        addFood?foodMatches.push(name):null;
+                        
+                        
+                        if(addFood){
+                            for(let i = 0 ; i < prefs.length ;i++){
+                                if(labels.includes(prefs[i])){
+                                    priority += WEIGHT2;
+                                }
+                            }
+                            for(let i = 0 ; i < prefsKeys.length ; i++){
+                                if(name.toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                                    priority+=WEIGHT3;
+                                }else{
+                                    for(let j = 0 ; j < summary.length ; j++){
+                                        if(summary[j].toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                                            priority += WEIGHT1;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    
-                });
+                        
+                    });
+                //}
+                users[user].foodRecs[servery] = {
+                    priority: priority,
+                    foods: foodMatches
+                }
             }
-            users[user].foodRecs[servery] = {
-                priority: priority,
-                foods: foodMatches
+            
+            let tOrdering = [];
+            for(servery in users[user].foodRecs){
+                tOrdering.push({servery: servery, info: users[user].foodRecs[servery]});
             }
+            //console.log(tOrdering);
+            tOrdering.sort((a,b)=>b.info.priority-a.info.priority);
+            console.log(tOrdering);
+            users[user].ordering = tOrdering;
         }
-        
-        let tOrdering = [];
-        for(servery in users[user].foodRecs){
-            tOrdering.push({servery: servery, info: users[user].foodRecs[servery]});
-        }
-        console.log(tOrdering);
-        tOrdering.sort((a,b)=>b.info.priority-a.info.priority);
-        console.log(tOrdering);
-        users[user].ordering = tOrdering;
-    }
-},10000);
+    },10000);
+}
+
 
 /*
 eggs
@@ -182,3 +187,7 @@ tree-nuts
 vegan
 vegetarian
 */
+
+runServery("lunch")
+
+setTimeout(()=>{runServery("dinner")},5000)

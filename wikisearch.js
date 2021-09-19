@@ -9,7 +9,7 @@ module.exports = async function getWikiPage(qStr) {
 		const summary = await page.summary();
 		//console.log(Object.keys(summary));
         //console.log("LOGGED", summary);
-		console.log(summary.extract)
+		//console.log(summary.extract)
         return summary.extract
 		//Res.ponse of type @wikiSummary - contains the intro and the main image
 	} catch (error) {

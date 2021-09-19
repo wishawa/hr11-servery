@@ -46,10 +46,10 @@ async function scrapeOne(url) {
 	const c = cheerio.load(text);
 	const list = [];
 	c("body").find("div.menu-scaffold > div.html-scaffold-body > div.menu-list > div.item-group.inside-daily-menu").map((_idx, elem) => list.push(elem));
-	const [lunches, dinners] = list;
+	const [lunch, dinner] = list;
 	return {
-		lunches: processSection(lunches, c),
-		dinners: processSection(dinners, c),
+		lunch: processSection(lunch, c),
+		dinner: processSection(dinner, c),
 	};
 }
 
