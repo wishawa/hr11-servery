@@ -75,7 +75,7 @@ users
 */
 const wikisearch = require("./wikisearch.js");
 
-/*
+
 let serveryChoice = {};
 async function initServeries(){
     for (let serveries in worker.URLS_LIST) {
@@ -168,8 +168,8 @@ setTimeout(()=>{
 })
 .catch(()=>{console.log("caught,")})
 
-setTimeout(()=>{console.log(serveryChoice)},5000)
-*/
+setTimeout(()=>{console.log(serveryChoice)},10000);
+
 /*
 eggs
 fish
