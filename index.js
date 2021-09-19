@@ -36,8 +36,6 @@ CODE FOR RECEIVING POST REQUESTS AND SENDING A RESPONSE BACK
 2. Check if the user's particular string is connected to any of the food items through wikisearch.
 Give Recommendation 
 */
-let users;
-(async ()=>{users = await worker.cronJob()})();
 /*[{
     name: "James",
     number: "224123123",
