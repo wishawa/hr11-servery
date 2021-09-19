@@ -37,7 +37,23 @@ CODE FOR RECEIVING POST REQUESTS AND SENDING A RESPONSE BACK
 2. Check if the user's particular string is connected to any of the food items through wikisearch.
 Give Recommendation 
 */
-let users = []
+let users = [{
+    name: "James",
+    number: "224123123",
+    restr: ["eggs",
+        "fish",
+        "gluten",
+        "milk",
+        "peanuts",
+        "shellfish",
+        "soy",
+        "tree-nuts",
+        "vegan",
+"vegetarian"],
+    prefs: ["shellfish"],
+    prefsKeys: ["korean", "chinese", "rice", "bread","thai"],
+    foodRecs: {}
+}]
 /*
 This will be in the format 
 users
@@ -49,7 +65,7 @@ users
     prefsKeys Keywords associated
     foodRecs:{
         north:{
-            matches: 4
+            priority: 4
             foods: []
         }
     }
@@ -67,11 +83,9 @@ async function initServeries(){
                 for (let i = 0; i < curMealTime?.length; i++) {
                     let {name} = curMealTime[i];
                     let curMealSummary = "";
-                    matching.getData(name).then((searchWord) => {
-                        (async () => {
+                    matching.getData(name).then(async (searchWord) => {
                             curMealSummary = await wikisearch(searchWord);
-                            //console.log(curMealSummary);
-                        })();
+                            
                     })
                     curMealTime[i].summary = curMealSummary;
                 }
@@ -79,33 +93,78 @@ async function initServeries(){
             serveryChoice[serveries] = serveryData;
         });
     }
-    console.log(serveryChoice);
+    //console.log(serveryChoice);
     return serveryChoice;
 }
-initServeries().then((x)=>{
-    console.log(x);
-    console.log(serveryChoice);
+initServeries()
+    .catch((e)=>{console.log("caught,", e)})
+
+
+let WEIGHT1 = 1,
+    WEIGHT2 = 2,
+    WEIGHT3 = 4;
+setTimeout(()=>{
     for(let user in users){
+        let {restr, prefs, prefsKeys} = users[user];
+        console.log(restr,prefs,prefsKeys)
         for(let servery in serveryChoice){
             let curServery = serveryChoice[servery];
             let foodMatches = [];
+            let priority = 0;
             for(let mealTime in curServery){
                 let curServeryMeal = curServery[mealTime];
-                curServeryMeal.foreach(()=>{
+                curServeryMeal.forEach((indMeal)=>{
                     //name and labels and summary
-
-                })
+                    let {name, labels, summary} = indMeal;
+                    let addFood = false;
+                    for(let i = 0 ; i < restr.length ; i++){
+                        console.log(labels, restr[i], labels.includes(restr[i]));
+                        if(labels.includes(restr[i])){
+                            addFood = true;
+                            break;
+                        }
+                    }
+                    addFood?foodMatches.push(name):null;
+                    
+                    
+                    if(addFood){
+                        for(let i = 0 ; i < prefs.length ;i++){
+                            if(labels.includes(prefs[i])){
+                                priority += WEIGHT2;
+                            }
+                        }
+                        for(let i = 0 ; i < prefsKeys.length ; i++){
+                            if(name.toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                                priority+=WEIGHT3;
+                            }else{
+                                for(let j = 0 ; j < summary.length ; j++){
+                                    if(summary[j].toLowerCase().includes(prefsKeys[i].toLowerCase())){
+                                        priority += WEIGHT1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                });
             }
-            users[user][servery].foodRecs = {
-                matches: foodMatches.length,
+            users[user].foodRecs[servery] = {
+                priority: priority,
                 foods: foodMatches
             }
         }
+        
+        let tOrdering = [];
+        for(servery in users[user].foodRecs){
+            tOrdering.push({servery: servery, info: users[user].foodRecs[servery]});
+        }
+        console.log(tOrdering);
+        tOrdering.sort((a,b)=>b.info.priority-a.info.priority);
+        console.log(tOrdering);
+        users[user].ordering = tOrdering;
     }
-})
-.catch(()=>{console.log("caught,")})
-
-setTimeout(()=>{console.log(serveryChoice)},5000)
+    //console.log(serveryChoice)
+},10000)
 /*
 eggs
 fish
