@@ -43,18 +43,30 @@ async function start() {
 			phoneUpdateContainer.classList.remove('hidden');
 			phoneCheckButton.onclick = async () => {
 				const phoneValue = phoneNumberField.value;
-				const appVerifier = new RecaptchaVerifier(phoneCaptchaContainer, {}, auth);
-				const confirmRes = await linkWithPhoneNumber(user, phoneValue, appVerifier);
-				phoneSubmitButton.onclick = async () => {
-					const verCode = phoneVerifyField.value;
-					const credentials = await confirmRes.confirm(verCode);
-					const user = credentials.user;
-					await setDoc(doc(db, 'users', user.uid), {
-						displayName: user.displayName,
-						email: user.email,
-						phone: user.phoneNumber,
-					});
-					goHome();
+				const appVerifier = new RecaptchaVerifier(phoneCaptchaContainer, {
+					size: "invisible",
+				}, auth);
+				try {
+					const confirmRes = await linkWithPhoneNumber(user, phoneValue, appVerifier);
+					phoneSubmitButton.onclick = async () => {
+						const verCode = phoneVerifyField.value;
+						try {
+							const credentials = await confirmRes.confirm(verCode);
+							const user = credentials.user;
+							await setDoc(doc(db, 'users', user.uid), {
+								displayName: user.displayName,
+								email: user.email,
+								phone: user.phoneNumber,
+							});
+							goHome();
+						}
+						catch(e) {
+							alert("Phone number verification failed. Please check the code and try again.");
+						}
+					}
+				}
+				catch(e) {
+					alert("Phone number submission failed. Please check your phone number and try again.");
 				}
 			}
 		}
